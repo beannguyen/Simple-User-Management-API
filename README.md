@@ -4,6 +4,7 @@ Description:
 - This project is divided from big project call Simple-User-Management
 - This project focuses on Back-End (C# - .NET core 3.0/3.1) and Database (MSSQL)
 - Front-End of big project can be refered from https://github.com/beannguyen/Simple-User-Management-Dashboard
+
 Feature:
 - Use .NET core 3.0/3.1 and Entity framework to build API system for project (UI described in FE project mentioned above)
 - Use code first to generate Database from system model
