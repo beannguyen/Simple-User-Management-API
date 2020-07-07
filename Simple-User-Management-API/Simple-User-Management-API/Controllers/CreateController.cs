@@ -12,16 +12,19 @@ namespace Simple_User_Management_API.Controllers
     [ApiController]
     public class CreateController : ControllerBase
     {
+        private UserManagementContext _UserManagementContext;
+
+        public CreateController(UserManagementContext userManagementContext)
+        {
+            _UserManagementContext = userManagementContext;
+        }
         [HttpPost("Role")]
         public async Task<ActionResult<string>> CreateRole([FromBody] Role role) 
         {
             try
             {
-                using (var context = new UserManagementContext())
-                {
-                    await context.Roles.AddAsync(role);
-                    await context.SaveChangesAsync();
-                }
+                await _UserManagementContext.Roles.AddAsync(role);
+                await _UserManagementContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -37,11 +40,8 @@ namespace Simple_User_Management_API.Controllers
         {
             try
             {
-                using (var context = new UserManagementContext())
-                {
-                    await context.Users.AddAsync(user);
-                    await context.SaveChangesAsync();
-                }
+                await _UserManagementContext.Users.AddAsync(user);
+                await _UserManagementContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
