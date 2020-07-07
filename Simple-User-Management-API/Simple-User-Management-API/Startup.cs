@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Simple_User_Management_API.Models;
+using Simple_User_Management_API.UnitOfWork.Interface;
+using Simple_User_Management_API.UnitOfWork.Service;
 
 namespace Simple_User_Management_API
 {
@@ -29,6 +24,10 @@ namespace Simple_User_Management_API
         {
             services.AddControllers();
 
+            services.AddDbContext<UserManagementContext>(options => options.UseSqlServer(Configuration["SqlServerConnectionString"]));
+            services.AddScoped<IUnitOfWork,UnitOfWork.Service.UnitOfWork>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
             services.AddCors(options =>
         {
             options.AddDefaultPolicy(
@@ -36,12 +35,11 @@ namespace Simple_User_Management_API
                 {
                     builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
+                    .AllowAnyHeader();
                 });
         });
 
-            services.AddDbContext<UserManagementContext>(options => options.UseSqlServer(Configuration["SqlServerConnectionString"]));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

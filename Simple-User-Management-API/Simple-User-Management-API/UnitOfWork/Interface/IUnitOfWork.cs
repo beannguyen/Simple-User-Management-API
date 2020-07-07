@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Simple_User_Management_API.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace Simple_User_Management_API.UnitOfWork
+namespace Simple_User_Management_API.UnitOfWork.Interface
 {
     public interface IUnitOfWork : IDisposable
     {
-        DbContext Context { get; }
         void Commit();
+        void CommitAsync();
     }
 }

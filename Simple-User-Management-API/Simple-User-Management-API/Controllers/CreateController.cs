@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Simple_User_Management_API.Models;
+using Simple_User_Management_API.UnitOfWork.Interface;
+using System;
+using System.Threading.Tasks;
 
 namespace Simple_User_Management_API.Controllers
 {
@@ -12,25 +10,29 @@ namespace Simple_User_Management_API.Controllers
     [ApiController]
     public class CreateController : ControllerBase
     {
-        private UserManagementContext _UserManagementContext;
+        private readonly UserManagementContext _UserManagementContext;
+        private readonly IUnitOfWork _UnitOfWork;
+        private readonly IRepository<Role> _Repository;
 
-        public CreateController(UserManagementContext userManagementContext)
+        public CreateController(UserManagementContext userManagementContext, IUnitOfWork unitOfWork, IRepository<Role> repository)
         {
             _UserManagementContext = userManagementContext;
+            _UnitOfWork = unitOfWork;
+            _Repository = repository;
         }
+
         [HttpPost("Role")]
-        public async Task<ActionResult<string>> CreateRole([FromBody] Role role) 
+        public async Task<ActionResult<string>> CreateRole([FromBody] Role role)
         {
             try
             {
-                await _UserManagementContext.Roles.AddAsync(role);
-                await _UserManagementContext.SaveChangesAsync();
+                await _Repository.Add(role);
+                _UnitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
                 return Ok(ex);
                 throw;
-
             }
             return Ok();
         }
@@ -47,7 +49,6 @@ namespace Simple_User_Management_API.Controllers
             {
                 return Ok(ex);
                 throw;
-
             }
             return Ok();
         }
