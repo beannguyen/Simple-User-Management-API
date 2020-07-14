@@ -56,7 +56,7 @@ namespace Simple_User_Management_API.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("UserProfiles");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Simple_User_Management_API.Models.UserRole", b =>

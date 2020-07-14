@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Simple_User_Management_API.Migrations
 {
-    public partial class CreateUserManagementDB : Migration
+    public partial class UserManagementDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,7 +20,7 @@ namespace Simple_User_Management_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProfiles",
+                name: "Users",
                 columns: table => new
                 {
                     UserID = table.Column<Guid>(nullable: false),
@@ -32,7 +32,7 @@ namespace Simple_User_Management_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProfiles", x => x.UserID);
+                    table.PrimaryKey("PK_Users", x => x.UserID);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,9 +52,9 @@ namespace Simple_User_Management_API.Migrations
                         principalColumn: "RoleID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserRoles_UserProfiles_UserID",
+                        name: "FK_UserRoles_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "UserProfiles",
+                        principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -74,7 +74,7 @@ namespace Simple_User_Management_API.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "UserProfiles");
+                name: "Users");
         }
     }
 }

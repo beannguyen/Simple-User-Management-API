@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Simple_User_Management_API.Models;
 using Simple_User_Management_API.UnitOfWork.Interface;
 using System;
@@ -6,49 +7,49 @@ using System.Threading.Tasks;
 
 namespace Simple_User_Management_API.Controllers
 {
+    
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
-    public class CreateController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly UserManagementContext _UserManagementContext;
         private readonly IUnitOfWork _UnitOfWork;
-        private readonly IRepository<Role> _Repository;
+        private readonly IRepository<User> _Repository;
 
-        public CreateController(UserManagementContext userManagementContext, IUnitOfWork unitOfWork, IRepository<Role> repository)
+        public UserController(UserManagementContext userManagementContext, IUnitOfWork unitOfWork, IRepository<User> repository)
         {
             _UserManagementContext = userManagementContext;
             _UnitOfWork = unitOfWork;
             _Repository = repository;
         }
-
-        [HttpPost("Role")]
-        public async Task<ActionResult<string>> CreateRole([FromBody] Role role)
+        [Authorize(Roles = "Manager")]
+        [HttpPost("Create")]
+        public async Task<ActionResult<string>> Create([FromBody] User user)
         {
             try
             {
-                await _Repository.Add(role);
+                await _Repository.Add(user);
                 _UnitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                return Ok(ex);
-                throw;
+                return BadRequest(ex);
             }
             return Ok();
         }
-
-        [HttpPost("User")]
-        public async Task<ActionResult<string>> CreateUser([FromBody] User user)
+        [Authorize(Roles = "Loc")]
+        [HttpPost("Loc")]
+        public async Task<ActionResult<string>> Loc([FromBody] User user)
         {
             try
             {
-                await _UserManagementContext.Users.AddAsync(user);
-                await _UserManagementContext.SaveChangesAsync();
+                await _Repository.Add(user);
+                _UnitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                return Ok(ex);
-                throw;
+                return BadRequest(ex);
             }
             return Ok();
         }

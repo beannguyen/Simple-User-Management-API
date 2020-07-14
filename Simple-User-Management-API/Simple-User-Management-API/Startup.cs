@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Simple_User_Management_API.Middleware;
 using Simple_User_Management_API.Models;
+using Simple_User_Management_API.Services;
 using Simple_User_Management_API.UnitOfWork.Interface;
 using Simple_User_Management_API.UnitOfWork.Service;
 
@@ -23,11 +25,12 @@ namespace Simple_User_Management_API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            services.AddTokenAuthentication(Configuration);
             services.AddDbContext<UserManagementContext>(options => options.UseSqlServer(Configuration["SqlServerConnectionString"]));
             services.AddScoped<IUnitOfWork,UnitOfWork.Service.UnitOfWork>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
+            services.AddSingleton<IAuthService, JWTService>();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddCors(options =>
         {
             options.AddDefaultPolicy(
@@ -56,6 +59,8 @@ namespace Simple_User_Management_API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseCors();
 
