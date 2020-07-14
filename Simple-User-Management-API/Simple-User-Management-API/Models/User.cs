@@ -16,6 +16,7 @@ namespace Simple_User_Management_API.Models
         public string UserName { get; set; }
         public string UserEmailAddress { get; set; }
         public string UserPassword { get; set; }
+        public string ImageURL { get; set; }
         public IList<UserRole> UserRoles { get; set; }
     }
 }

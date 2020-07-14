@@ -10,8 +10,8 @@ using Simple_User_Management_API.Models;
 namespace Simple_User_Management_API.Migrations
 {
     [DbContext(typeof(UserManagementContext))]
-    [Migration("20200706100655_CreateUserManagementDB")]
-    partial class CreateUserManagementDB
+    [Migration("20200707160121_UserManagementDB")]
+    partial class UserManagementDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -58,7 +58,7 @@ namespace Simple_User_Management_API.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("UserProfiles");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Simple_User_Management_API.Models.UserRole", b =>
