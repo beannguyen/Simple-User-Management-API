@@ -23,9 +23,24 @@ namespace Simple_User_Management_API.Controllers
             _UnitOfWork = unitOfWork;
             _Repository = repository;
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPost("Create")]
         public async Task<ActionResult<string>> Create([FromBody] User user)
+        {
+            try
+            {
+                await _Repository.Add(user);
+                _UnitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            return Ok();
+        }
+        [Authorize(Roles = "Loc")]
+        [HttpPost("Loc")]
+        public async Task<ActionResult<string>> Loc([FromBody] User user)
         {
             try
             {

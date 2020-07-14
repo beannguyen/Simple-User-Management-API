@@ -24,13 +24,14 @@ namespace Simple_User_Management_API.Middleware
             })
             .AddJwtBearer(x =>
             {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(symmetricKey),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = "localhost",
-                    ValidAudience = "localhost"
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                 };
             });
 

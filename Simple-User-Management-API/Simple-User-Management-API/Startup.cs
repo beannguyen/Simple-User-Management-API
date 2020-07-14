@@ -30,7 +30,7 @@ namespace Simple_User_Management_API
             services.AddScoped<IUnitOfWork,UnitOfWork.Service.UnitOfWork>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddSingleton<IAuthService, JWTService>();
-            
+            services.AddControllers().AddNewtonsoftJson();
             services.AddCors(options =>
         {
             options.AddDefaultPolicy(
