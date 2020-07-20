@@ -1,19 +1,17 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Simple_User_Management_API.Interfaces;
 using Simple_User_Management_API.Models;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Simple_User_Management_API.Services
 {
     public class JWTService : IAuthService
     {
-
-        public bool IsTokenValid(string token,string secretkey)
+        public bool IsTokenValid(string token, string secretkey)
         {
             if (string.IsNullOrEmpty(token))
                 throw new ArgumentException("Given token is null or empty.");

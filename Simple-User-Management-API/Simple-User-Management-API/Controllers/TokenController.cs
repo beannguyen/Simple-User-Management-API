@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Simple_User_Management_API.Interfaces;
+using Simple_User_Management_API.Models;
+using Simple_User_Management_API.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Simple_User_Management_API.Models;
-using Simple_User_Management_API.Services;
 
 namespace Simple_User_Management_API.Controllers
 {
@@ -17,13 +16,14 @@ namespace Simple_User_Management_API.Controllers
     {
         private IConfiguration _config;
         private IAuthService _jwt;
+
         public TokenController(IConfiguration config, IAuthService authService)
         {
             _config = config;
             _jwt = authService;
         }
 
-        [HttpGet]
+        [HttpPost]
         public string GetRandomToken()
         {
             IAuthContainerModel model = GetJWTContainerModel("Moshe Binieli", "Manager");
@@ -34,10 +34,10 @@ namespace Simple_User_Management_API.Controllers
             else
             {
                 List<Claim> claims = _jwt.GetTokenClaims(token, model.SecretKey).ToList();
-
             }
             return token;
         }
+
         private static JWTContainerModel GetJWTContainerModel(string name, string role)
         {
             return new JWTContainerModel()
@@ -49,6 +49,6 @@ namespace Simple_User_Management_API.Controllers
                     new Claim(ClaimTypes.Role, role)
                 }
             };
+        }
     }
-}
 }

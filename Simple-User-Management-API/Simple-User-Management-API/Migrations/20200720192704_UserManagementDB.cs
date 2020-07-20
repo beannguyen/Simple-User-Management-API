@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace Simple_User_Management_API.Migrations
 {
@@ -24,11 +24,11 @@ namespace Simple_User_Management_API.Migrations
                 columns: table => new
                 {
                     UserID = table.Column<Guid>(nullable: false),
-                    UserGoogleID = table.Column<string>(nullable: true),
-                    UserGoogleAccount = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(nullable: true),
-                    UserEmailAddress = table.Column<string>(nullable: true),
-                    UserPassword = table.Column<string>(nullable: true)
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<bool>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
+                    ProfilePicture = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

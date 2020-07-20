@@ -1,9 +1,11 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Simple_User_Management_API.Interfaces;
 using Simple_User_Management_API.Middleware;
 using Simple_User_Management_API.Models;
 using Simple_User_Management_API.Services;
@@ -25,11 +27,18 @@ namespace Simple_User_Management_API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
             services.AddTokenAuthentication(Configuration);
             services.AddDbContext<UserManagementContext>(options => options.UseSqlServer(Configuration["SqlServerConnectionString"]));
-            services.AddScoped<IUnitOfWork,UnitOfWork.Service.UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork.Service.UnitOfWork>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddSingleton<IAuthService, JWTService>();
+            services.AddSingleton<EmailConfig>(new EmailConfig 
+            {
+                Email = Configuration.GetValue("EmailConfig","Email"),
+                Password = Configuration.GetValue("EmailConfig", "Password")
+            });
+            services.AddSingleton<IEmailService,EmailService>();
             services.AddControllers().AddNewtonsoftJson();
             services.AddCors(options =>
         {
@@ -41,8 +50,6 @@ namespace Simple_User_Management_API
                     .AllowAnyHeader();
                 });
         });
-
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
