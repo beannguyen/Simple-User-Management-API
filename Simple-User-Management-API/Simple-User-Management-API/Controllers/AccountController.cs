@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Simple_User_Management_API.Extension;
 using Simple_User_Management_API.Interfaces;
 using Simple_User_Management_API.Models;
 using Simple_User_Management_API.Models.AccountModels;
@@ -27,21 +28,23 @@ namespace Simple_User_Management_API.Controllers
         private readonly IRepository<User> _Repository;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
+        private readonly JWTConfig _jWTConfig;
 
-        public AccountController(UserManagementContext userManagementContext, IUnitOfWork unitOfWork, IRepository<User> repository, IMapper mapper, IEmailService emailService)
+        public AccountController(UserManagementContext userManagementContext, IUnitOfWork unitOfWork, IRepository<User> repository, IMapper mapper, IEmailService emailService, JWTConfig jWTConfig)
         {
             _UserManagementContext = userManagementContext;
             _UnitOfWork = unitOfWork;
             _Repository = repository;
             _mapper = mapper;
             _emailService = emailService;
+            _jWTConfig = jWTConfig;
         }
         [HttpPost("Login")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login([FromBody] LoginModel model)
         {
-            var result = await _Repository.CountWhere(x => x.Email == model.Email && x.Password == model.Password);
+            var result = await _Repository.CountWhere(x => x.Email == model.Email && x.Password == model.Password.HashPassword(_jWTConfig.Secret));
             if (result == 1)
             {
                 return Ok(model);
@@ -77,10 +80,32 @@ namespace Simple_User_Management_API.Controllers
             var user = result.ToList().FirstOrDefault();
             if(user.Email != null && user.Email != string.Empty)
             {
-                _emailService.Send(model.Email, ResetPassword.Subject, $"{ResetPassword.Body} {user.Password}");
+                string randompass = CreateRandomPasswordWithRandomLength();
+                user.Password = randompass.HashPassword(_jWTConfig.Secret);
+                await _Repository.Add(user);
+                _UnitOfWork.CommitAsync();
+                _emailService.Send(model.Email, ResetPassword.Subject, $"{ResetPassword.Body} {randompass}");
                 return Ok(model);
             }
             else return Ok(new ErrorModel(EmailNotExist.ErrorCode, EmailNotExist.Message));
+        }
+        private static string CreateRandomPasswordWithRandomLength()
+        {
+            // Create a string of characters, numbers, special characters that allowed in the password  
+            string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-";
+            Random random = new Random();
+
+            // Minimum size 8. Max size is number of all allowed chars.  
+            int size = random.Next(8, validChars.Length);
+
+            // Select one random character at a time from the string  
+            // and create an array of chars  
+            char[] chars = new char[size];
+            for (int i = 0; i < size; i++)
+            {
+                chars[i] = validChars[random.Next(0, validChars.Length)];
+            }
+            return new string(chars);
         }
     }
 }

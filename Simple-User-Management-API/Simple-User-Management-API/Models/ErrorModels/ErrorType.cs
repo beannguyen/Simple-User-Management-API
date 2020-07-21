@@ -20,12 +20,17 @@ namespace Simple_User_Management_API.Models.ErrorModels
         public static class AlreadyExistErrorModel
         {
             public const string ErrorCode = "103";
-            public const string Message = "Password and Confirm Password are not valid";
+            public const string Message = "Email is already registered";
         }
         public static class EmailNotExist 
         {
             public const string ErrorCode = "104";
-            public const string Message = "email is not registered";
+            public const string Message = "Email is not registered";
+        }
+        public static class OldPasswordNotCorrect
+        {
+            public const string ErrorCode = "105";
+            public const string Message = "Your old password is not correct";
         }
     }
 }

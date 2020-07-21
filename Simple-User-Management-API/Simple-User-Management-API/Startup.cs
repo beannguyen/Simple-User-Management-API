@@ -11,6 +11,7 @@ using Simple_User_Management_API.Models;
 using Simple_User_Management_API.Services;
 using Simple_User_Management_API.UnitOfWork.Interface;
 using Simple_User_Management_API.UnitOfWork.Service;
+using System;
 
 namespace Simple_User_Management_API
 {
@@ -32,6 +33,11 @@ namespace Simple_User_Management_API
             services.AddDbContext<UserManagementContext>(options => options.UseSqlServer(Configuration["SqlServerConnectionString"]));
             services.AddScoped<IUnitOfWork, UnitOfWork.Service.UnitOfWork>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddSingleton<JWTConfig>(new JWTConfig
+            {
+                Secret = Configuration.GetValue("JwtConfig", "secret"),
+                ExpirationInMinutes = Configuration.GetValue("JwtConfig", "expirationInMinutes")
+            });
             services.AddSingleton<IAuthService, JWTService>();
             services.AddSingleton<EmailConfig>(new EmailConfig 
             {
