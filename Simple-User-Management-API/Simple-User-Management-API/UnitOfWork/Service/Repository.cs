@@ -15,7 +15,7 @@ namespace Simple_User_Management_API.UnitOfWork.Service
 
         private readonly UserManagementContext Context;
 
-        #endregion
+        #endregion Fields
 
         public Repository(UserManagementContext context)
         {
@@ -64,7 +64,6 @@ namespace Simple_User_Management_API.UnitOfWork.Service
         public Task<int> CountWhere(Expression<Func<TEntity, bool>> predicate)
             => Context.Set<TEntity>().CountAsync(predicate);
 
-        #endregion
-
+        #endregion Public Methods
     }
 }

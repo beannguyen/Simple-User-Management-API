@@ -3,7 +3,7 @@ using System;
 
 namespace Simple_User_Management_API.Migrations
 {
-    public partial class CreateUserManagementDB : Migration
+    public partial class UserManagementDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,19 +20,19 @@ namespace Simple_User_Management_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProfiles",
+                name: "Users",
                 columns: table => new
                 {
                     UserID = table.Column<Guid>(nullable: false),
-                    UserGoogleID = table.Column<string>(nullable: true),
-                    UserGoogleAccount = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(nullable: true),
-                    UserEmailAddress = table.Column<string>(nullable: true),
-                    UserPassword = table.Column<string>(nullable: true)
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<bool>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
+                    ProfilePicture = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProfiles", x => x.UserID);
+                    table.PrimaryKey("PK_Users", x => x.UserID);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,9 +52,9 @@ namespace Simple_User_Management_API.Migrations
                         principalColumn: "RoleID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserRoles_UserProfiles_UserID",
+                        name: "FK_UserRoles_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "UserProfiles",
+                        principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -74,7 +74,7 @@ namespace Simple_User_Management_API.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "UserProfiles");
+                name: "Users");
         }
     }
 }
